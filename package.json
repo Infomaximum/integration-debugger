@@ -15,9 +15,15 @@
   ],
   "scripts": {
     "release": "standard-version && rollup -c",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "lint": "tsc --noEmit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@infomaximum/integration-sdk": "^1.2.2",
+    "@types/xmlhttprequest": "^1.8.2",
+    "xmlhttprequest": "^1.8.0"
+  },
   "devDependencies": {
     "@infomaximum/config": "^2.7.0",
     "@rollup/plugin-commonjs": "28.0.3",

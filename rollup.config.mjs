@@ -1,4 +1,4 @@
-import * as packageJson from "./package.json" with { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
 import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
