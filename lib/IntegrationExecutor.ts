@@ -1,6 +1,7 @@
 import type {
   ExecuteService,
   Integration,
+  IntegrationBlock,
   IntegrationBlockExecute,
 } from "@infomaximum/integration-sdk";
 import { Service } from "./Service";
@@ -12,7 +13,7 @@ class IntegrationExecutor {
 
   private blockId: string | undefined;
 
-  constructor(integration: any, blockId?: string) {
+  constructor(integration: Integration, blockId?: string) {
     this.integration = integration;
 
     this.blockId = blockId;
@@ -60,7 +61,7 @@ class IntegrationExecutor {
     }
   }
 
-  private async executeBlock(block: any) {
+  private async executeBlock(block: IntegrationBlock) {
     console.log(`Выполняется блок: ${block.meta.name}`);
 
     try {
@@ -77,12 +78,8 @@ class IntegrationExecutor {
     }
   }
 
-  private async callBlockFunction(fn: any, context: any) {
-    const result = await fn.call(null, ...context);
-
-    if (typeof result?.output === "function") {
-      return result.output();
-    }
+  private async callBlockFunction(fn: IntegrationBlockExecute, context: ExecutionContext) {
+    const result = fn.call(null, ...context);
 
     return result;
   }
