@@ -1,12 +1,6 @@
-import type {
-  ExecuteService,
-  Integration,
-  IntegrationBlock,
-  IntegrationBlockExecute,
-} from "@infomaximum/integration-sdk";
+import type { ExecuteService, Integration, IntegrationBlock } from "@infomaximum/integration-sdk";
 import { Service } from "./Service";
-
-type ExecutionContext = Parameters<IntegrationBlockExecute>;
+import { BlockExecutor } from "./BlockExecutor";
 
 export type ExecuteEntity = "integration" | "block";
 
@@ -32,7 +26,7 @@ class IntegrationExecutor {
     }
   }
 
-  private createExecutionContext(): ExecutionContext {
+  private createService() {
     const { request, error, base64Decode, base64Encode, console } = new Service();
 
     const service = {
@@ -43,11 +37,10 @@ class IntegrationExecutor {
       console,
     } satisfies ExecuteService;
 
-    //@ts-expect-error
-    return [service];
+    return service;
   }
 
-  public async execute() {
+  public execute() {
     console.log(`Запуск интеграции: ${this.integration.meta.name}`);
 
     let blocks = this.integration.blocks;
@@ -64,7 +57,7 @@ class IntegrationExecutor {
 
     try {
       for (const block of blocks) {
-        await this.executeBlock(block);
+        this.executeBlock(block);
       }
 
       console.log("Интеграция успешно выполнена");
@@ -74,27 +67,23 @@ class IntegrationExecutor {
     }
   }
 
-  private async executeBlock(block: IntegrationBlock) {
+  private executeBlock(block: IntegrationBlock) {
     console.log(`Выполняется блок: ${block.meta.name}`);
 
+    const service = this.createService();
+
+    const authData = {};
+
+    const executableBlock = new BlockExecutor({ block });
+
     try {
-      const result = await this.callBlockFunction(
-        block.executePagination,
-        this.createExecutionContext()
-      );
+      executableBlock.execute({ service, authData });
 
       console.log(`Блок ${block.meta.name} Выполнен`);
-      return result;
     } catch (error) {
       console.error(`Блок ${block.meta.name} с ошибкой:`, error);
       throw error;
     }
-  }
-
-  private async callBlockFunction(fn: IntegrationBlockExecute, context: ExecutionContext) {
-    const result = fn.call(null, ...context);
-
-    return result;
   }
 }
 

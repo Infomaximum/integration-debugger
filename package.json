@@ -24,7 +24,7 @@
     "xmlhttprequest": "^1.8.0"
   },
   "peerDependencies": {
-    "@infomaximum/integration-sdk": "^1.2.2"
+    "@infomaximum/integration-sdk": "^1.3.0"
   },
   "peerDependenciesMeta": {
     "@infomaximum/integration-sdk": {
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@infomaximum/config": "^2.7.0",
-    "@infomaximum/integration-sdk": "^1.2.2",
+    "@infomaximum/integration-sdk": "^1.3.0",
     "@rollup/plugin-commonjs": "28.0.3",
     "@rollup/plugin-node-resolve": "16.0.1",
     "@rollup/plugin-typescript": "12.1.2",

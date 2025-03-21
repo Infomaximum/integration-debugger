@@ -1,7 +1,7 @@
 import minimist from "minimist";
 import { IntegrationExecutor } from "./lib/IntegrationExecutor";
 
-async function runIntegration(argv: minimist.ParsedArgs) {
+function runIntegration(argv: minimist.ParsedArgs) {
   const debugTypeFlagName = "debugType";
   const blockIdFlagName = "blockId";
 
@@ -25,7 +25,7 @@ async function runIntegration(argv: minimist.ParsedArgs) {
   }
 
   try {
-    await executor?.execute();
+    executor?.execute();
   } catch (error) {
     console.error("Integration execution failed:", error);
   }

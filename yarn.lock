@@ -26,10 +26,10 @@
   resolved "https://registry.yarnpkg.com/@infomaximum/config/-/config-2.7.0.tgz#7a1b9d29a3c1bda49ad658bbde85dd9d698caecc"
   integrity sha512-HYxpnASghHmBYfaGdgRoxc3DKkMiFjoUeEZZIpIGyBlKA13wfhFYgZajX9/qEf7kr+519XsHzCa4k9A67N3STQ==
 
-"@infomaximum/integration-sdk@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@infomaximum/integration-sdk/-/integration-sdk-1.2.2.tgz#aec3da2ccce81bba04ffe0b141391c2f484b9e0d"
-  integrity sha512-+p5AztaP7o2hDPXrdC6/ofHKOUQYao3kHKoLNOxSmC8ZgAjdkH3dTcBw5mkRnhtVm/r9VkOAfnR6kSpO0zCePg==
+"@infomaximum/integration-sdk@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@infomaximum/integration-sdk/-/integration-sdk-1.3.0.tgz#b7b66cfb03189e0124737886a550ce39024aee6c"
+  integrity sha512-0QUyqWGKWhW9Ld3du2E0OUk+C/DLWz504/yQ3KBuH8AO9jWtAwm2i3ijwHhij6dkpfBsidqeg19mgsLmPMnJ2w==
 
 "@jridgewell/sourcemap-codec@^1.5.0":
   version "1.5.0"
