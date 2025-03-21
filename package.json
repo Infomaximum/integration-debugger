@@ -20,16 +20,24 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@infomaximum/integration-sdk": "^1.2.2",
-    "@types/xmlhttprequest": "^1.8.2",
     "minimist": "^1.2.8",
     "xmlhttprequest": "^1.8.0"
   },
+  "peerDependencies": {
+    "@infomaximum/integration-sdk": "^1.2.2"
+  },
+  "peerDependenciesMeta": {
+    "@infomaximum/integration-sdk": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@infomaximum/config": "^2.7.0",
+    "@infomaximum/integration-sdk": "^1.2.2",
     "@rollup/plugin-commonjs": "28.0.3",
     "@rollup/plugin-node-resolve": "16.0.1",
     "@rollup/plugin-typescript": "12.1.2",
+    "@types/xmlhttprequest": "^1.8.2",
     "@types/node": "^22.13.10",
     "prettier": "3.5.3",
     "rollup": "4.36.0",
