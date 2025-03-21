@@ -3,6 +3,7 @@ import typescript from "@rollup/plugin-typescript";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import del from "rollup-plugin-delete";
+import { dts } from "rollup-plugin-dts";
 
 const externalPackages = [
   ...Object.keys(packageJson.dependencies || {}),
@@ -30,10 +31,33 @@ const config = [
       },
     ],
     plugins: [
+      del({ targets: "dist", hook: "buildStart", runOnce: true }),
       typescript(),
       resolve(),
       commonjs(),
-      del({ targets: "dist", hook: "buildStart", runOnce: true }),
+    ],
+    external: regexesOfPackages,
+  },
+  {
+    input: "dist/dts/index.d.ts",
+    output: [{ file: "dist/index.d.ts", format: "es" }],
+    plugins: [dts(), del({ targets: "dist/dts", hook: "buildEnd", runOnce: true })],
+  },
+  {
+    input: "./runDebug.ts",
+    output: [
+      {
+        file: "dist/run.js",
+        format: "cjs",
+        sourcemap: true,
+      },
+    ],
+    plugins: [
+      typescript({
+        tsconfig: "./tsconfig.run.json",
+      }),
+      resolve(),
+      commonjs(),
     ],
     external: regexesOfPackages,
   },

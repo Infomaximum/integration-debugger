@@ -8,15 +8,28 @@ import { Service } from "./Service";
 
 type ExecutionContext = Parameters<IntegrationBlockExecute>;
 
+export type ExecuteEntity = "integration" | "block";
+
+export type ExecuteParamsBlock = {
+  type: "block";
+  blockId: string;
+};
+
+export type ExecuteParamsIntegration = {
+  type: "integration";
+};
+
 class IntegrationExecutor {
   private integration: Integration;
 
   private blockId: string | undefined;
 
-  constructor(integration: Integration, blockId?: string) {
+  constructor(integration: Integration, params: ExecuteParamsIntegration | ExecuteParamsBlock) {
     this.integration = integration;
 
-    this.blockId = blockId;
+    if (params.type === "block") {
+      this.blockId = params.blockId;
+    }
   }
 
   private createExecutionContext(): ExecutionContext {
