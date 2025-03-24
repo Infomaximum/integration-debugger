@@ -43,24 +43,6 @@ const config = [
     output: [{ file: "dist/index.d.ts", format: "es" }],
     plugins: [dts(), del({ targets: "dist/dts", hook: "buildEnd", runOnce: true })],
   },
-  {
-    input: "./runDebug.ts",
-    output: [
-      {
-        file: "dist/run.js",
-        format: "cjs",
-        sourcemap: true,
-      },
-    ],
-    plugins: [
-      typescript({
-        tsconfig: "./tsconfig.run.json",
-      }),
-      resolve(),
-      commonjs(),
-    ],
-    external: regexesOfPackages,
-  },
 ];
 
 export default config;

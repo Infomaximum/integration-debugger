@@ -20,7 +20,6 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "minimist": "^1.2.8",
     "xmlhttprequest": "^1.8.0"
   },
   "peerDependencies": {
