@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/Infomaximum/integration-debugger/compare/v1.2.1...v1.3.0) (2025-03-24)
+
+
+### Features
+
+* передача отладочных данных в блоки ([73b34ef](https://github.com/Infomaximum/integration-debugger/commit/73b34efe6b225e24c79f87687c858d2ff4cd8f97))
+
 ### [1.2.1](https://github.com/Infomaximum/integration-debugger/compare/v1.2.0...v1.2.1) (2025-03-24)
 
 
