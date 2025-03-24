@@ -1,6 +1,4 @@
 import type {
-  BlockInputField,
-  BlockMeta,
   ExecuteBundle,
   ExecuteService,
   IntegrationBlock,
@@ -8,7 +6,11 @@ import type {
 } from "@infomaximum/integration-sdk";
 
 type ExecutionContext = Parameters<IntegrationBlockExecute>;
-type ExecuteParams = { service: ExecuteService; authData: Record<string, any> };
+type ExecuteParams = {
+  service: ExecuteService;
+  authData: Record<string, any>;
+  inputData: Record<string, any>;
+};
 
 type BlockExecutorParams = {
   block: IntegrationBlock;
@@ -16,37 +18,15 @@ type BlockExecutorParams = {
 
 class BlockExecutor {
   private block: IntegrationBlock;
-  private meta: BlockMeta;
-  private inputFields: BlockInputField[];
   private executePagination: IntegrationBlockExecute;
 
   constructor({ block }: BlockExecutorParams) {
     this.block = block;
-    this.meta = block.meta;
-    this.inputFields = block.inputFields;
+
     this.executePagination = block.executePagination;
   }
 
-  private generateRandomDataByType(field: BlockInputField) {
-    switch (field.type) {
-      case "text":
-      case "textPlain":
-      case "sqlArea":
-        return `Text ${Math.ceil(Math.random() * 100000)}`;
-      case "numberPlain":
-        return Math.ceil(Math.random() * 100000);
-      case "switcher":
-        return Math.random() > 0.5;
-      default:
-        return "Не обработан тип филда";
-    }
-  }
-
-  public execute({ service, authData }: ExecuteParams) {
-    const inputData = this.inputFields.map((field) => ({
-      [field.key]: this.generateRandomDataByType(field),
-    }));
-
+  public execute({ service, authData, inputData }: ExecuteParams) {
     const bundle = {
       inputData,
       authData,

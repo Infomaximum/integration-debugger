@@ -1,25 +1,34 @@
 import type { ExecuteService, Integration, IntegrationBlock } from "@infomaximum/integration-sdk";
 import { Service } from "./Service";
 import { BlockExecutor } from "./BlockExecutor";
+import type { DebuggingConfig } from "./types";
 
 export type ExecuteEntity = "integration" | "block";
+
+type ExecuteCommonParams = {
+  debuggingConfig: DebuggingConfig;
+};
 
 export type ExecuteParamsBlock = {
   type: "block";
   blockId: string;
-};
+} & ExecuteCommonParams;
 
 export type ExecuteParamsIntegration = {
   type: "integration";
-};
+} & ExecuteCommonParams;
 
 class IntegrationExecutor {
   private integration: Integration;
 
   private blockId: string | undefined;
 
+  private debuggingConfig: DebuggingConfig;
+
   constructor(integration: Integration, params: ExecuteParamsIntegration | ExecuteParamsBlock) {
     this.integration = integration;
+
+    this.debuggingConfig = params.debuggingConfig;
 
     if (params.type === "block") {
       this.blockId = params.blockId;
@@ -72,12 +81,15 @@ class IntegrationExecutor {
 
     const service = this.createService();
 
-    const authData = {};
-
     const executableBlock = new BlockExecutor({ block });
 
+    const { inputData, authData } = this.debuggingConfig.blocks[block.meta.key] ?? {
+      inputData: {},
+      authData: {},
+    };
+
     try {
-      executableBlock.execute({ service, authData });
+      executableBlock.execute({ service, authData: authData ?? {}, inputData });
 
       console.log(`Блок ${block.meta.name} Выполнен`);
     } catch (error) {
