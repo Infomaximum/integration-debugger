@@ -3,15 +3,15 @@ import { Service } from "./Service";
 import { BlockExecutor } from "./BlockExecutor";
 import type { DebuggingConfig } from "./types";
 
-export type ExecuteEntity = "integration" | "block";
+export type ExecuteEntity = "integration" | "entity";
 
 type ExecuteCommonParams = {
   debuggingConfig: DebuggingConfig;
 };
 
-export type ExecuteParamsBlock = {
-  type: "block";
-  blockId: string;
+export type ExecuteParamsEntity = {
+  type: "entity";
+  entityKey: string;
 } & ExecuteCommonParams;
 
 export type ExecuteParamsIntegration = {
@@ -21,17 +21,17 @@ export type ExecuteParamsIntegration = {
 class IntegrationExecutor {
   private integration: Integration;
 
-  private blockId: string | undefined;
+  private entityKey: string | undefined;
 
   private debuggingConfig: DebuggingConfig;
 
-  constructor(integration: Integration, params: ExecuteParamsIntegration | ExecuteParamsBlock) {
+  constructor(integration: Integration, params: ExecuteParamsIntegration | ExecuteParamsEntity) {
     this.integration = integration;
 
     this.debuggingConfig = params.debuggingConfig;
 
-    if (params.type === "block") {
-      this.blockId = params.blockId;
+    if (params.type === "entity") {
+      this.entityKey = params.entityKey;
     }
   }
 
@@ -53,12 +53,13 @@ class IntegrationExecutor {
     console.log(`Запуск интеграции: ${this.integration.meta.name}`);
 
     let blocks = this.integration.blocks;
+    let connections = this.integration.connections;
 
-    if (this.blockId) {
-      const block = blocks.find((b) => b.meta.key === this.blockId);
+    if (this.entityKey) {
+      const block = blocks.find((b) => b.meta.key === this.entityKey);
 
       if (!block) {
-        throw new Error(`Блок с key="${this.blockId}" не найден`);
+        throw new Error(`Сущность с key="${this.entityKey}" не найдена`);
       }
 
       blocks = [block];
