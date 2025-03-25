@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/Infomaximum/integration-debugger/compare/v1.3.1...v1.4.0) (2025-03-25)
+
+
+### Features
+
+* добавлен запуск подключений ([5fa1ccd](https://github.com/Infomaximum/integration-debugger/commit/5fa1ccd135c2bc9889843a1880fcb5ab551f93bf))
+
 ### [1.3.1](https://github.com/Infomaximum/integration-debugger/compare/v1.3.0...v1.3.1) (2025-03-25)
 
 
