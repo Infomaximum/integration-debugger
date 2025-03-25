@@ -1,5 +1,5 @@
 import type {
-  ExecuteBundle,
+  BlockExecuteBundle,
   ExecuteService,
   IntegrationBlock,
   IntegrationBlockExecute,
@@ -30,7 +30,7 @@ class BlockExecutor {
     const bundle = {
       inputData,
       authData,
-    } satisfies ExecuteBundle;
+    } satisfies BlockExecuteBundle;
 
     const context = [service, bundle, {}] satisfies ExecutionContext;
 

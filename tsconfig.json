@@ -4,7 +4,8 @@
     "target": "ES2022",
     "outDir": "dist",
     "declaration": true,
-    "declarationDir": "dist/dts"
+    "declarationDir": "dist/dts",
+    "removeComments": false
   },
   "include": ["lib"]
 }
