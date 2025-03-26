@@ -1,28 +1,17 @@
 import type {
+  Debugging,
   ExecuteService,
   Integration,
   IntegrationBlock,
-  IntegrationConnection,
 } from "@infomaximum/integration-sdk";
 import { Service } from "./Service";
 import { BlockExecutor } from "./BlockExecutor";
 import type { DebuggingConfig } from "./types";
 import { ConnectionExecutor } from "./ConnectionExecutor";
 
-export type ExecuteEntity = "integration" | "entity";
-
-type ExecuteCommonParams = {
+type IntegrationExecutorParams = Debugging.DebugIntegrationOptions & {
   debuggingConfig: DebuggingConfig;
 };
-
-export type ExecuteParamsEntity = {
-  type: "entity";
-  entityKey: string;
-} & ExecuteCommonParams;
-
-export type ExecuteParamsIntegration = {
-  type: "integration";
-} & ExecuteCommonParams;
 
 type ExecuteBlockParams = {
   authData?: Record<string, string | number>;
@@ -31,18 +20,18 @@ type ExecuteBlockParams = {
 class IntegrationExecutor {
   private integration: Integration;
 
-  private entityKey: string | undefined;
+  private entityKey: string;
 
   private debuggingConfig: DebuggingConfig;
+  private isSeries: boolean;
 
-  constructor(integration: Integration, params: ExecuteParamsIntegration | ExecuteParamsEntity) {
+  constructor(integration: Integration, params: IntegrationExecutorParams) {
     this.integration = integration;
 
     this.debuggingConfig = params.debuggingConfig;
 
-    if (params.type === "entity") {
-      this.entityKey = params.entityKey;
-    }
+    this.entityKey = params.entityKey;
+    this.isSeries = !!params.series;
   }
 
   private createService() {
