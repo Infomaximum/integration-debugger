@@ -23,6 +23,11 @@ export type DebuggingConnectionsConfig = Partial<{
 }>;
 
 export type DebuggingConfig = {
+  /** Количество запусков в серии, максимальное значение 100_000 выполнений
+   *
+   * @default 3
+   */
+  seriesIterations?: number;
   /** Настройка мок данных для отладки блоков */
   blocks: DebuggingBlocksConfig;
   /** Настройка мок данных для отладки подключений */

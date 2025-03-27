@@ -3,11 +3,13 @@ import type {
   ExecuteService,
   Integration,
   IntegrationBlock,
+  IntegrationConnection,
 } from "@infomaximum/integration-sdk";
 import { Service } from "./Service";
 import { BlockExecutor } from "./BlockExecutor";
 import type { DebuggingConfig } from "./types";
 import { ConnectionExecutor } from "./ConnectionExecutor";
+import { DEFAULT_SERIES_ITERATIONS } from "./const";
 
 type IntegrationExecutorParams = Debugging.DebugIntegrationOptions & {
   debuggingConfig: DebuggingConfig;
@@ -15,6 +17,7 @@ type IntegrationExecutorParams = Debugging.DebugIntegrationOptions & {
 
 type ExecuteBlockParams = {
   authData?: Record<string, string | number>;
+  context: Record<string, any> | undefined;
 };
 
 class IntegrationExecutor {
@@ -34,7 +37,7 @@ class IntegrationExecutor {
     this.isSeries = !!params.series;
   }
 
-  private createService() {
+  private createService(): ExecuteService {
     const { request, error, base64Decode, base64Encode, console } = new Service();
 
     const service = {
@@ -49,49 +52,65 @@ class IntegrationExecutor {
   }
 
   public execute() {
-    console.log(`Запуск интеграции: "${this.integration.meta.name}"`);
+    const executableConnection = this.integration.connections.find(
+      (c) => c.meta.key === this.entityKey
+    );
 
-    let blocks = this.integration.blocks;
+    const executableBlock = this.integration.blocks.find((b) => b.meta.key === this.entityKey);
 
-    if (this.entityKey) {
-      const block = blocks.find((b) => b.meta.key === this.entityKey);
-
-      if (!block) {
-        throw new Error(`Сущность с key="${this.entityKey}" не найдена`);
-      }
-
-      blocks = [block];
-    }
-
-    const { authData } = this.executeConnection() ?? { authData: undefined };
-
-    try {
-      for (const block of blocks) {
-        this.executeBlock(block, { authData });
-      }
-
-      console.log("Интеграция успешно выполнена");
-    } catch (error) {
-      console.error("Ошибка при выполнении интеграции:", error);
-      throw error;
+    if (executableConnection) {
+      this.executeConnection(executableConnection);
+    } else if (executableBlock) {
+      this.executeBlockWithConnection(executableBlock);
+    } else {
+      throw new Error(`Сущность с key=${this.entityKey} не найдена в блоках и подключениях`);
     }
   }
 
-  private executeConnection() {
-    if (!this.entityKey) {
-      return;
-    }
-
-    const connections = this.integration.connections;
-
+  private executeBlockWithConnection(executableBlock: IntegrationBlock) {
     const connectionKey = this.debuggingConfig.blocks?.[this.entityKey]?.connectionKey;
 
-    const connection = connections.find((c) => c?.meta?.key === connectionKey);
+    const connection = this.integration.connections.find((c) => c?.meta?.key === connectionKey);
 
-    if (!connection) {
-      return;
+    let authData: Record<string, any> | undefined;
+
+    if (connection) {
+      const result = this.executeConnection(connection) ?? { authData: undefined };
+
+      authData = result.authData;
     }
 
+    const seriesCount = this.isSeries
+      ? Math.min(
+          Math.abs(this.debuggingConfig.seriesIterations ?? DEFAULT_SERIES_ITERATIONS),
+          100_000
+        )
+      : 1;
+
+    let context = undefined;
+
+    const blockExecutor = new BlockExecutor({ block: executableBlock });
+
+    if (this.isSeries) {
+      console.log(`Выполняется серия запусков блока: "${executableBlock.meta.name}"`);
+    } else {
+      console.log(`Выполняется блок: "${executableBlock.meta.name}"`);
+    }
+    for (let index = 0; index < seriesCount; index++) {
+      const result = this.executeBlock(blockExecutor, {
+        authData,
+        context,
+      });
+
+      context = structuredClone(result.state);
+
+      if (result.hasNext === false) {
+        break;
+      }
+    }
+  }
+
+  private executeConnection(connection: IntegrationConnection) {
     console.log(`Выполняется подключение: "${connection.meta.name}"`);
 
     const service = this.createService();
@@ -105,7 +124,7 @@ class IntegrationExecutor {
     try {
       const result = executableConnection.execute({ service, authData: authData ?? {} });
 
-      console.log(`Подключение "${connection.meta.name}" Выполнено`);
+      console.log(`Подключение "${connection.meta.name}" выполнено`);
 
       return result;
     } catch (error) {
@@ -114,24 +133,28 @@ class IntegrationExecutor {
     }
   }
 
-  private executeBlock(block: IntegrationBlock, params: ExecuteBlockParams) {
-    console.log(`Выполняется блок: "${block.meta.name}"`);
-
+  private executeBlock(executableBlock: BlockExecutor, params: ExecuteBlockParams) {
     const service = this.createService();
 
-    const executableBlock = new BlockExecutor({ block });
-
-    const { inputData, authData } = this.debuggingConfig?.blocks?.[block.meta.key] ?? {
+    const { inputData, authData } = this.debuggingConfig?.blocks?.[executableBlock.meta.key] ?? {
       inputData: {},
       authData: {},
     };
 
     try {
-      executableBlock.execute({ service, authData: params.authData ?? authData ?? {}, inputData });
+      const result = executableBlock.execute({
+        service,
+        authData: params.authData ?? authData ?? {},
+        inputData,
+        context: params.context,
+      });
 
-      console.log(`Блок "${block.meta.name}" Выполнен`);
+      console.log(`Блок "${executableBlock.meta.name}" выполнен:`);
+      console.log(JSON.stringify(result));
+
+      return result;
     } catch (error) {
-      console.error(`Блок "${block.meta.name}" с ошибкой:`, error);
+      console.error(`Блок "${executableBlock.meta.name}" с ошибкой:`, error);
       throw error;
     }
   }

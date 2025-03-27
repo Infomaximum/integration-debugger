@@ -1,5 +1,6 @@
 import type {
   BlockExecuteBundle,
+  BlockMeta,
   ExecuteService,
   IntegrationBlock,
   IntegrationBlockExecute,
@@ -10,6 +11,7 @@ type ExecuteParams = {
   service: ExecuteService;
   authData: Record<string, any>;
   inputData: Record<string, any>;
+  context: Record<string, any> | undefined;
 };
 
 type BlockExecutorParams = {
@@ -17,24 +19,24 @@ type BlockExecutorParams = {
 };
 
 class BlockExecutor {
-  private block: IntegrationBlock;
+  public meta: BlockMeta;
   private executePagination: IntegrationBlockExecute;
 
   constructor({ block }: BlockExecutorParams) {
-    this.block = block;
+    this.meta = block.meta;
 
     this.executePagination = block.executePagination;
   }
 
-  public execute({ service, authData, inputData }: ExecuteParams) {
+  public execute({ service, authData, inputData, context }: ExecuteParams) {
     const bundle = {
       inputData,
       authData,
     } satisfies BlockExecuteBundle;
 
-    const context = [service, bundle, {}] satisfies ExecutionContext;
+    const args = [service, bundle, context] satisfies ExecutionContext;
 
-    const result = this.executePagination.apply(null, context);
+    const result = this.executePagination.apply(null, args);
 
     return result;
   }

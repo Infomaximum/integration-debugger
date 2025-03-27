@@ -23,7 +23,7 @@ export class ConnectionExecutor {
   public execute({ authData, service }: ConnectionExecuteParams) {
     const buttonFields = this.connection.inputFields.filter((f) => f.type === "button");
 
-    const copyAuthData = { ...authData };
+    const copyAuthData = structuredClone(authData);
 
     const bundle = {
       authData: copyAuthData,
@@ -44,6 +44,8 @@ export class ConnectionExecutor {
         console.log(message);
       }
     }
+
+    this.connection.execute?.call(null, service, bundle);
 
     return { authData: bundle.authData };
   }

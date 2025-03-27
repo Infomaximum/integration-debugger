@@ -1,0 +1,1 @@
+export const DEFAULT_SERIES_ITERATIONS = 3;
