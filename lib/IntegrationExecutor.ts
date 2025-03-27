@@ -70,7 +70,8 @@ class IntegrationExecutor {
   private executeBlockWithConnection(executableBlock: IntegrationBlock) {
     const connectionKey = this.debuggingConfig.blocks?.[this.entityKey]?.connectionKey;
 
-    const connection = this.integration.connections.find((c) => c?.meta?.key === connectionKey);
+    const connection =
+      !!connectionKey && this.integration.connections.find((c) => c?.meta?.key === connectionKey);
 
     let authData: Record<string, any> | undefined;
 
@@ -78,6 +79,8 @@ class IntegrationExecutor {
       const result = this.executeConnection(connection) ?? { authData: undefined };
 
       authData = result.authData;
+    } else if (connectionKey && !connection) {
+      console.warn(`Подключение с key=${connectionKey}, не найдено`);
     }
 
     const seriesCount = this.isSeries
