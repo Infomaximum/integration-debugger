@@ -43,8 +43,8 @@ export class ConnectionExecutor {
       if (message) {
         console.log(message);
       }
-
-      return { authData: bundle.authData };
     }
+
+    return { authData: bundle.authData };
   }
 }
