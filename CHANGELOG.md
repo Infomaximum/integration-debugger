@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.2](https://github.com/Infomaximum/integration-debugger/compare/v1.5.1...v1.5.2) (2025-03-28)
+
+
+### Bug Fixes
+
+* исправлено падение если выполнение блока ничего не вернуло ([1f0778a](https://github.com/Infomaximum/integration-debugger/commit/1f0778a1c61797557b757a73bce27d75faf604cf))
+
 ### [1.5.1](https://github.com/Infomaximum/integration-debugger/compare/v1.5.0...v1.5.1) (2025-03-27)
 
 
