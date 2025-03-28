@@ -105,9 +105,9 @@ class IntegrationExecutor {
         context,
       });
 
-      context = structuredClone(result.state);
+      context = result?.state ? structuredClone(result.state) : undefined;
 
-      if (result.hasNext === false) {
+      if (result?.hasNext === false) {
         break;
       }
     }
