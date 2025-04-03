@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/Infomaximum/integration-debugger/compare/v1.5.2...v1.6.0) (2025-04-03)
+
+
+### Features
+
+* возможность добавить общие authData для всей интеграции ([e94b68d](https://github.com/Infomaximum/integration-debugger/commit/e94b68d5099f7398d89d20cdadcb8cd39a09201d))
+
 ### [1.5.2](https://github.com/Infomaximum/integration-debugger/compare/v1.5.1...v1.5.2) (2025-03-28)
 
 
