@@ -124,8 +124,10 @@ class IntegrationExecutor {
       authData: {},
     };
 
+    const resultAuthData = Object.assign({}, authData, this.debuggingConfig.commonAuthData);
+
     try {
-      const result = executableConnection.execute({ service, authData: authData ?? {} });
+      const result = executableConnection.execute({ service, authData: resultAuthData });
 
       console.log(`Подключение "${connection.meta.name}" выполнено`);
 
@@ -144,10 +146,16 @@ class IntegrationExecutor {
       authData: {},
     };
 
+    const resultAuthData = Object.assign(
+      {},
+      params.authData ?? authData,
+      this.debuggingConfig.commonAuthData
+    );
+
     try {
       const result = executableBlock.execute({
         service,
-        authData: params.authData ?? authData ?? {},
+        authData: resultAuthData,
         inputData,
         context: params.context,
       });

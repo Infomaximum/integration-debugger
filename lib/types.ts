@@ -22,12 +22,20 @@ export type DebuggingConnectionsConfig = Partial<{
   [connectionKey: string]: DebuggingConnectionConfig;
 }>;
 
+export type CommonIntegrationAuthData = {
+  // todo: заменить на GlobalAuthData из "@infomaximum/integration-sdk"
+  BASE_URL: string;
+
+  [key: string]: any;
+};
+
 export type DebuggingConfig = {
   /** Количество запусков в серии, максимальное значение 100_000 выполнений
    *
    * @default 3
    */
   seriesIterations?: number;
+  commonAuthData?: CommonIntegrationAuthData;
   /** Настройка мок данных для отладки блоков */
   blocks: DebuggingBlocksConfig;
   /** Настройка мок данных для отладки подключений */
