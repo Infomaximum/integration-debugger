@@ -6,7 +6,9 @@ import type {
   IntegrationBlockExecute,
 } from "@infomaximum/integration-sdk";
 
-type ExecutionContext = Parameters<IntegrationBlockExecute>;
+type ExecutionContext = Parameters<
+  IntegrationBlockExecute<{}, {}, Record<string, any> | undefined>
+>;
 type ExecuteParams = {
   service: ExecuteService;
   authData: Record<string, any>;

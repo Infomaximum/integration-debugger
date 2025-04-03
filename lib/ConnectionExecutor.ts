@@ -1,6 +1,7 @@
 import type {
   ConnectionExecuteBundle,
   ExecuteService,
+  GlobalAuthData,
   IntegrationConnection,
 } from "@infomaximum/integration-sdk";
 
@@ -10,7 +11,7 @@ type ConnectionExecutorParams = {
 
 type ConnectionExecuteParams = {
   service: ExecuteService;
-  authData: Record<string, any>;
+  authData: GlobalAuthData & Record<string, any>;
 };
 
 export class ConnectionExecutor {
@@ -27,7 +28,7 @@ export class ConnectionExecutor {
 
     const bundle = {
       authData: copyAuthData,
-    } satisfies ConnectionExecuteBundle;
+    } satisfies ConnectionExecuteBundle<ConnectionExecuteParams["authData"]>;
 
     for (const buttonField of buttonFields) {
       buttonField.executeWithRedirect?.(service, bundle);

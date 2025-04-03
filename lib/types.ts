@@ -1,3 +1,5 @@
+import type { GlobalAuthData } from "@infomaximum/integration-sdk";
+
 export type DebuggingBlockConfig = {
   /** Мок данные для выполнения блока */
   inputData: Record<string, string | number>;
@@ -22,10 +24,7 @@ export type DebuggingConnectionsConfig = Partial<{
   [connectionKey: string]: DebuggingConnectionConfig;
 }>;
 
-export type CommonIntegrationAuthData = {
-  // todo: заменить на GlobalAuthData из "@infomaximum/integration-sdk"
-  BASE_URL: string;
-
+export type CommonIntegrationAuthData = GlobalAuthData & {
   [key: string]: any;
 };
 

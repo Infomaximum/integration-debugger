@@ -36,7 +36,14 @@ class Service implements ExecuteService {
   }
 
   public get error(): ExecuteServiceError {
-    return { stringError: console.error, cause: (message: string) => {} };
+    return {
+      stringError: (message: string) => {
+        throw new Error(message);
+      },
+      cause: (message: string) => {
+        throw new Error(message);
+      },
+    };
   }
 
   public base64Encode(input: string) {
