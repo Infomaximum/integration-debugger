@@ -14,13 +14,13 @@ class Service implements ExecuteService {
     //@ts-expect-error
     const xhr = new _XMLHttpRequest();
 
+    xhr.open(method, url, false);
+
     if (headers) {
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value);
       });
     }
-
-    xhr.open(method, url, false);
 
     if (method === "GET") {
       xhr.send();
