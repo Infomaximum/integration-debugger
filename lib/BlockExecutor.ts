@@ -38,9 +38,10 @@ class BlockExecutor {
     const validationResult = validator.validateOutput(output, output_variables);
 
     if (validationResult === true) {
-      console.log("Validation successful!");
+      console.log("Валидация успешно выполнена!");
     } else {
-      console.error("Validation failed:");
+      console.error("Ошибки валидации:");
+
       validationResult.forEach((error) => console.error(`- ${error}`));
     }
   }
