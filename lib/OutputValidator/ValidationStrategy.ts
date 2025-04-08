@@ -1,5 +1,5 @@
 import type { OutputBlockVariables } from "@infomaximum/integration-sdk";
-import type { OutputValidator } from "./OutputValidator";
+import type { OutputValidator } from "./OutputValidator/OutputValidator";
 
 export interface ValidationStrategy {
   validate(

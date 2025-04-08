@@ -160,8 +160,7 @@ class IntegrationExecutor {
         context: params.context,
       });
 
-      console.log(`Блок "${executableBlock.meta.name}" выполнен:`);
-      console.log(JSON.stringify(result, null, 2));
+      console.log(`Блок "${executableBlock.meta.name}" выполнен!`);
 
       return result;
     } catch (error) {
