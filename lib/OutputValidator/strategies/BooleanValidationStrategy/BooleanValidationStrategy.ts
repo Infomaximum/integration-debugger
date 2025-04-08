@@ -6,6 +6,8 @@ export class BooleanValidationStrategy implements ValidationStrategy {
       return [];
     }
 
-    return [`${path} невалидное значение "${value}", ожидался тип Boolean (null, boolean)`];
+    return [
+      `${path} невалидное значение "${JSON.stringify(value)}", ожидался тип Boolean (null, boolean)`,
+    ];
   }
 }

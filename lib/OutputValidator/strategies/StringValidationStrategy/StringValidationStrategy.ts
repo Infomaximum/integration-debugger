@@ -6,6 +6,8 @@ export class StringValidationStrategy implements ValidationStrategy {
       return [];
     }
 
-    return [`${path} невалидное значение "${value}", ожидался тип String (null, number, string)`];
+    return [
+      `${path} невалидное значение "${JSON.stringify(value)}", ожидался тип String (null, number, string)`,
+    ];
   }
 }

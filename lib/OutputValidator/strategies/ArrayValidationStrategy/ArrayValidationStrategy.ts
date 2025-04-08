@@ -1,13 +1,13 @@
 import type { OutputBlockVariables } from "@infomaximum/integration-sdk";
-import type { ValidationStrategy } from "../ValidationStrategy";
-import type { OutputValidator } from "../OutputValidator";
+import type { OutputValidator } from "lib/OutputValidator/OutputValidator";
+import type { ValidationStrategy } from "lib/OutputValidator/ValidationStrategy";
 
 type VariableType = OutputBlockVariables["type"];
 
 export class ArrayValidationStrategy implements ValidationStrategy {
   constructor(
     private elementStrategy: ValidationStrategy,
-    private elementTypeName: string
+    private elementType: VariableType
   ) {}
 
   validate(
@@ -17,29 +17,32 @@ export class ArrayValidationStrategy implements ValidationStrategy {
     validator: OutputValidator
   ): string[] {
     if (!Array.isArray(value)) {
-      return [`${path} should be an array of ${this.elementTypeName}s`];
+      return [
+        `${path} некорректное значение "${JSON.stringify(value)}", должен быть массив типа ${this.elementType}[]`,
+      ];
     }
 
     const errors: string[] = [];
-    value.forEach((element, index) => {
+
+    for (const [index, element] of value.entries()) {
       const elementPath = `${path}[${index}]`;
 
       const elementVariable = {
-        ...variable,
-        name: `${variable.name}[${index}]`,
-        type: variable.type.replace("Array", "") as VariableType, // Получаем тип элемента
-        struct: "struct" in variable ? variable.struct : [],
-      };
+        name: `${variable.name}_element_${index}`,
+        type: this.elementType,
+        // @ts-expect-error
+        struct: variable.struct,
+      } satisfies OutputBlockVariables;
 
       const elementErrors = this.elementStrategy.validate(
         element,
         elementPath,
-        elementVariable as OutputBlockVariables,
+        elementVariable,
         validator
       );
 
       errors.push(...elementErrors);
-    });
+    }
 
     return errors;
   }

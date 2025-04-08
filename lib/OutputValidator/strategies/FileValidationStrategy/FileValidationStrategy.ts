@@ -6,6 +6,6 @@ export class FileValidationStrategy implements ValidationStrategy {
       return [];
     }
 
-    return [`${path} невалидное значение "${value}", ожидался File (string)`];
+    return [`${path} невалидное значение "${JSON.stringify(value)}", ожидался File (string)`];
   }
 }

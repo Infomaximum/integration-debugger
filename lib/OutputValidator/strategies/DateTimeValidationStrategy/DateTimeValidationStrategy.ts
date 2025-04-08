@@ -16,7 +16,7 @@ export class DateTimeValidationStrategy implements ValidationStrategy {
     }
 
     return [
-      `${path} невалидное значение "${value}", ожидалось значение, которое можно привести к типу Date (null, целочисленное число, date iso)`,
+      `${path} невалидное значение "${JSON.stringify(value)}", ожидалось значение, которое можно привести к типу Date (null, целочисленное число, date iso)`,
     ];
   }
 }

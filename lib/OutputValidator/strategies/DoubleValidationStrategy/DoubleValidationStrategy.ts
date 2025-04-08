@@ -8,7 +8,7 @@ export class DoubleValidationStrategy implements ValidationStrategy {
     }
 
     return [
-      `${path} невалидное значение "${value}", ожидалось значение, которое можно привести к типу Double (null, number, string)`,
+      `${path} невалидное значение "${JSON.stringify(value)}", ожидалось значение, которое можно привести к типу Double (null, number, string)`,
     ];
   }
 }

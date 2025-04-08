@@ -8,7 +8,7 @@ export class BigDecimalValidationStrategy implements ValidationStrategy {
     }
 
     return [
-      `${path} невалидное значение "${value}", ожидалось значение, которое можно привести к типу BigDecimal (null, number, string)`,
+      `${path} невалидное значение "${JSON.stringify(value)}", ожидалось значение, которое можно привести к типу BigDecimal (null, number, string)`,
     ];
   }
 }

@@ -1,8 +1,8 @@
 import type { OutputBlockVariables } from "@infomaximum/integration-sdk";
 import type { ValidationStrategy } from "./ValidationStrategy";
 import { StringValidationStrategy } from "./strategies/StringValidationStrategy/StringValidationStrategy";
-import { IntegerValidationStrategy } from "./strategies/IntegerValidationStrategy/IntegerValidationStrategy";
-import { ArrayValidationStrategy } from "./strategies/ArrayValidationStrategy";
+import { LongValidationStrategy } from "./strategies/LongValidationStrategy/LongValidationStrategy";
+import { ArrayValidationStrategy } from "./strategies/ArrayValidationStrategy/ArrayValidationStrategy";
 import { DoubleValidationStrategy } from "./strategies/DoubleValidationStrategy/DoubleValidationStrategy";
 import { BooleanValidationStrategy } from "./strategies/BooleanValidationStrategy/BooleanValidationStrategy";
 import { DateTimeValidationStrategy } from "./strategies/DateTimeValidationStrategy/DateTimeValidationStrategy";
@@ -30,7 +30,7 @@ export class OutputValidator {
 
   private registerDefaultStrategies(): void {
     const stringStrategy = new StringValidationStrategy();
-    const integerStrategy = new IntegerValidationStrategy();
+    const longStrategy = new LongValidationStrategy();
     const doubleStrategy = new DoubleValidationStrategy();
     const booleanStrategy = new BooleanValidationStrategy();
     const dateTimeStrategy = new DateTimeValidationStrategy();
@@ -39,10 +39,9 @@ export class OutputValidator {
     const fileStrategy = new FileValidationStrategy();
 
     const objectStrategy = new ObjectValidationStrategy();
-    const arrayObjectStrategy = new ArrayValidationStrategy(objectStrategy, "object");
 
     this.registerStrategy("String", stringStrategy)
-      .registerStrategy("Long", integerStrategy)
+      .registerStrategy("Long", longStrategy)
       .registerStrategy("Double", doubleStrategy)
       .registerStrategy("Boolean", booleanStrategy)
       .registerStrategy("DateTime", dateTimeStrategy)
@@ -50,23 +49,20 @@ export class OutputValidator {
       .registerStrategy("BigDecimal", bigDecimalStrategy)
       .registerStrategy("File", fileStrategy)
       .registerStrategy("Object", objectStrategy)
-      .registerStrategy("StringArray", new ArrayValidationStrategy(stringStrategy, "string"))
-      .registerStrategy("LongArray", new ArrayValidationStrategy(integerStrategy, "integer"))
-      .registerStrategy("DoubleArray", new ArrayValidationStrategy(doubleStrategy, "number"))
-      .registerStrategy("BooleanArray", new ArrayValidationStrategy(booleanStrategy, "boolean"))
-      .registerStrategy(
-        "DateTimeArray",
-        new ArrayValidationStrategy(dateTimeStrategy, "ISO datetime string")
-      )
+      .registerStrategy("StringArray", new ArrayValidationStrategy(stringStrategy, "String"))
+      .registerStrategy("LongArray", new ArrayValidationStrategy(longStrategy, "Long"))
+      .registerStrategy("DoubleArray", new ArrayValidationStrategy(doubleStrategy, "Double"))
+      .registerStrategy("BooleanArray", new ArrayValidationStrategy(booleanStrategy, "Boolean"))
+      .registerStrategy("DateTimeArray", new ArrayValidationStrategy(dateTimeStrategy, "DateTime"))
       .registerStrategy(
         "BigIntegerArray",
-        new ArrayValidationStrategy(bigIntegerStrategy, "string or number")
+        new ArrayValidationStrategy(bigIntegerStrategy, "BigInteger")
       )
       .registerStrategy(
         "BigDecimalArray",
-        new ArrayValidationStrategy(bigDecimalStrategy, "string or number")
+        new ArrayValidationStrategy(bigDecimalStrategy, "BigDecimal")
       )
-      .registerStrategy("ObjectArray", arrayObjectStrategy);
+      .registerStrategy("ObjectArray", new ArrayValidationStrategy(objectStrategy, "Object"));
   }
 
   public validateOutput(output: any[], outputVariables: OutputBlockVariables[]): true | string[] {
@@ -90,8 +86,6 @@ export class OutputValidator {
     variables: OutputBlockVariables[]
   ): string[] {
     const allErrors: string[] = [];
-
-    console.warn(variables);
 
     const allowedVariableNames = new Set(variables.map((v) => v.name));
 
