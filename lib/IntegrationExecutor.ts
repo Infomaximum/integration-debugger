@@ -161,7 +161,7 @@ class IntegrationExecutor {
       });
 
       console.log(`Блок "${executableBlock.meta.name}" выполнен:`);
-      console.log(JSON.stringify(result));
+      console.log(JSON.stringify(result, null, 2));
 
       return result;
     } catch (error) {
