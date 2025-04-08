@@ -8,7 +8,7 @@ import { ObjectValidationStrategy } from "../ObjectValidationStrategy/ObjectVali
 describe("ArrayValidationStrategy", () => {
   const outputValidator = new OutputValidator();
 
-  test("Валидация масива строк", () => {
+  test("Валидация массива строк", () => {
     const stringStrategy = new StringValidationStrategy();
     const arrayValidationStrategy = new ArrayValidationStrategy(stringStrategy, "String");
 
@@ -27,54 +27,88 @@ describe("ArrayValidationStrategy", () => {
     ).toEqual(0);
   });
 
-  test("Валидация масива объектов", () => {
+  test("Валидация массива объектов", () => {
     const objectStrategy = new ObjectValidationStrategy();
     const arrayValidationStrategy = new ArrayValidationStrategy(objectStrategy, "Object");
 
     const testOutput = {
-      c: [
+      contact_methods: [
         {
-          a: {
-            a1: "a1",
-          },
+          type: "email",
+          value: "alice@example.com",
+          verified: true,
+          attempts: 5234243242424424,
         },
         {
-          b: {
-            b1: "b1",
-          },
+          type: "phone",
+          value: "+1234567890",
+          verified: false,
+          attempts: 4234242424242424,
         },
       ],
     };
 
     const testOutputVariables = {
-      name: "c",
+      name: "contact_methods",
       type: "ObjectArray",
       struct: [
-        {
-          name: "a",
-          type: "Object",
-          struct: [
-            {
-              name: "a",
-              type: "String",
-            },
-          ],
-        },
-        {
-          name: "b",
-          type: "Object",
-          struct: [
-            {
-              name: "b",
-              type: "String",
-            },
-          ],
-        },
+        { name: "type", type: "String" },
+        { name: "value", type: "String" },
+        { name: "verified", type: "Boolean" },
+        { name: "attempts", type: "BigInteger" },
       ],
     } satisfies OutputBlockVariables;
 
     expect(
-      arrayValidationStrategy.validate(testOutput.c, "c", testOutputVariables, outputValidator)
-    ).toEqual(0);
+      arrayValidationStrategy.validate(
+        testOutput.contact_methods,
+        "contact_methods",
+        testOutputVariables,
+        outputValidator
+      )
+    ).toEqual([]);
+  });
+
+  test("Валидация массива объектов c null не является валидным", () => {
+    const objectStrategy = new ObjectValidationStrategy();
+    const arrayValidationStrategy = new ArrayValidationStrategy(objectStrategy, "Object");
+
+    const testOutput = {
+      contact_methods: [
+        {
+          type: "email",
+          value: "alice@example.com",
+          verified: true,
+          attempts: 5234243242424424,
+        },
+        {
+          type: "phone",
+          value: "+1234567890",
+          verified: false,
+          attempts: 4234242424242424,
+        },
+        null,
+      ],
+    };
+
+    const testOutputVariables = {
+      name: "contact_methods",
+      type: "ObjectArray",
+      struct: [
+        { name: "type", type: "String" },
+        { name: "value", type: "String" },
+        { name: "verified", type: "Boolean" },
+        { name: "attempts", type: "BigInteger" },
+      ],
+    } satisfies OutputBlockVariables;
+
+    expect(
+      arrayValidationStrategy.validate(
+        testOutput.contact_methods,
+        "contact_methods",
+        testOutputVariables,
+        outputValidator
+      )
+    ).toHaveLength(1);
   });
 });
