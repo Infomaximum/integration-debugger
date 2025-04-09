@@ -1,3 +1,4 @@
+import { Logger } from "lib/Logger";
 import type { InferenceStrategy, ReturnInferStruct } from "lib/SchemaGenerator/InferenceStrategy";
 
 export class FallbackInferenceStrategy implements InferenceStrategy {
@@ -5,7 +6,7 @@ export class FallbackInferenceStrategy implements InferenceStrategy {
   infer(value: any): ReturnInferStruct | null {
     const jsType = typeof value;
 
-    console.warn(
+    Logger.warn(
       `Не удалось определить специфический тип для значения (JS тип: ${jsType}). Используется тип по умолчанию: String.`
     );
 

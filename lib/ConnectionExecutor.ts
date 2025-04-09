@@ -4,6 +4,7 @@ import type {
   GlobalAuthData,
   IntegrationConnection,
 } from "@infomaximum/integration-sdk";
+import { Logger } from "./Logger";
 
 type ConnectionExecutorParams = {
   connection: IntegrationConnection;
@@ -42,7 +43,7 @@ export class ConnectionExecutor {
       const message = buttonField.executeWithMessage?.(service, bundle);
 
       if (message) {
-        console.log(message);
+        Logger.log(message);
       }
     }
 

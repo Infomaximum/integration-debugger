@@ -1,4 +1,5 @@
 import type { OutputBlockVariables } from "@infomaximum/integration-sdk";
+import { Logger } from "lib/Logger";
 import type { InferenceStrategy, ReturnInferStruct } from "lib/SchemaGenerator/InferenceStrategy";
 import type { SchemaGenerator } from "lib/SchemaGenerator/SchemaGenerator/SchemaGenerator";
 
@@ -18,7 +19,7 @@ export class ObjectInferenceStrategy implements InferenceStrategy {
       }
 
       if (value === null) {
-        console.warn(
+        Logger.warn(
           `Генерация схемы: по ключу "${key}" значение равное "null", невозможно определить точный тип, добавлен тип NUll `
         );
 
@@ -41,7 +42,7 @@ export class ObjectInferenceStrategy implements InferenceStrategy {
           ...(inferred.struct && { struct: inferred.struct }),
         });
       } else {
-        console.error(`Не удалось определить тип для ключа "${key}".`);
+        Logger.error(`Не удалось определить тип для ключа "${key}".`);
       }
     }
 

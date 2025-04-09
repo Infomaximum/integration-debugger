@@ -7,6 +7,7 @@ import type {
   IntegrationBlockExecute,
 } from "@infomaximum/integration-sdk";
 import { OutputValidator } from "./OutputValidator/OutputValidator/OutputValidator";
+import { Logger } from "./Logger";
 
 type ExecutionContext = Parameters<
   IntegrationBlockExecute<{}, {}, Record<string, any> | undefined>
@@ -38,14 +39,14 @@ class BlockExecutor {
     const validationResult = validator.validateOutput(output, output_variables);
 
     if (validationResult === true) {
-      console.log("Валидация успешно выполнена!");
+      Logger.log("Валидация успешно выполнена!");
 
       return true;
     }
 
-    console.error("Ошибки валидации:");
+    Logger.error("Ошибки валидации:");
 
-    validationResult.forEach((error) => console.error(`- ${error}`));
+    validationResult.forEach((error) => Logger.error(`- ${error}`));
 
     return false;
   }

@@ -6,6 +6,7 @@ import { NumberInferenceStrategy } from "../strategies/NumberInferenceStrategy/N
 import { BooleanInferenceStrategy } from "../strategies/BooleanInferenceStrategy/BooleanInferenceStrategy";
 import { ObjectInferenceStrategy } from "../strategies/ObjectInferenceStrategy/ObjectInferenceStrategy";
 import { FallbackInferenceStrategy } from "../strategies/FallbackInferenceStrategy/FallbackInferenceStrategy";
+import { Logger } from "lib/Logger";
 
 export class SchemaGenerator {
   private strategies: InferenceStrategy[] = [];
@@ -33,7 +34,7 @@ export class SchemaGenerator {
       }
     }
 
-    console.error("Тип не определен для значения:", value);
+    Logger.error(`Тип не определен для значения: ${JSON.stringify(value)}`);
 
     return null;
   }
@@ -52,7 +53,7 @@ export class SchemaGenerator {
       }
 
       if (value === null) {
-        console.warn(
+        Logger.warn(
           `Генерация схемы: по ключу "${name}" значение равное "null", невозможно определить точный тип, добавлен тип NUll `
         );
 
@@ -76,7 +77,7 @@ export class SchemaGenerator {
           ...(inferred.struct && { struct: inferred.struct }),
         });
       } else {
-        console.error(`Не удалось определить тип для элемента с индексом ${i}.`);
+        Logger.error(`Не удалось определить тип для элемента с индексом ${i}.`);
       }
     }
 
@@ -89,7 +90,7 @@ export class SchemaGenerator {
       outputData.length === 0 ||
       !outputData.every((arr) => Array.isArray(arr))
     ) {
-      console.error("Входные данные должны быть массивом массивов element[][]");
+      Logger.error("Входные данные должны быть массивом массивов element[][]");
 
       return [];
     }

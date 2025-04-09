@@ -1,3 +1,4 @@
+import { Logger } from "lib/Logger";
 import type {
   InferenceStrategy,
   ReturnInferStruct,
@@ -16,7 +17,7 @@ export class ArrayInferenceStrategy implements InferenceStrategy {
     if (value.length === 0) {
       // Невозможно определить тип элемента из пустого массива. Используем умолчание.
       // Можно сделать это поведение настраиваемым.
-      console.warn("Обнаружен пустой массив, тип элементов по умолчанию: StringArray.");
+      Logger.warn("Обнаружен пустой массив, тип элементов по умолчанию: StringArray.");
       return { type: "StringArray" };
     }
 
@@ -32,7 +33,7 @@ export class ArrayInferenceStrategy implements InferenceStrategy {
 
     if (firstValidElement === null) {
       // Все элементы null или undefined. Используем умолчание.
-      console.warn(
+      Logger.warn(
         "Массив содержит только null/undefined, тип элементов по умолчанию: StringArray."
       );
 
@@ -42,7 +43,7 @@ export class ArrayInferenceStrategy implements InferenceStrategy {
     const elementInference = this.generator.inferTypeAndStruct(firstValidElement);
 
     if (!elementInference) {
-      console.warn(
+      Logger.warn(
         `Не удалось определить тип для элементов массива (первый элемент: ${firstValidElement}). По умолчанию: StringArray.`
       );
 
@@ -66,7 +67,7 @@ export class ArrayInferenceStrategy implements InferenceStrategy {
     ];
 
     if (!validArrayTypes.includes(arrayType)) {
-      console.warn(
+      Logger.warn(
         `Не удалось сформировать стандартный тип массива для типа элемента "${elementType}". По умолчанию: StringArray.`
       );
 
