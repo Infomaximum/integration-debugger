@@ -23,10 +23,29 @@ jobs:
       - name: Run lint
         run: yarn lint
 
+  test:
+    name: Run test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run test
+        run: yarn test
+
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: [lint] # Сначала линт
+    needs: [lint, test]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

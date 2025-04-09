@@ -10,6 +10,8 @@ import { BlockExecutor } from "./BlockExecutor";
 import type { DebuggingConfig } from "./types";
 import { ConnectionExecutor } from "./ConnectionExecutor";
 import { DEFAULT_SERIES_ITERATIONS } from "./const";
+import { generateSchemaFromOutputData } from "./SchemaGenerator";
+import { Logger } from "./Logger";
 
 type IntegrationExecutorParams = Debugging.DebugIntegrationOptions & {
   debuggingConfig: DebuggingConfig;
@@ -27,6 +29,7 @@ class IntegrationExecutor {
 
   private debuggingConfig: DebuggingConfig;
   private isSeries: boolean;
+  private isGenerateSchema: boolean;
 
   constructor(integration: Integration, params: IntegrationExecutorParams) {
     this.integration = integration;
@@ -35,6 +38,7 @@ class IntegrationExecutor {
 
     this.entityKey = params.entityKey;
     this.isSeries = !!params.series;
+    this.isGenerateSchema = !!params.isGenerateSchema;
   }
 
   private createService(): ExecuteService {
@@ -80,7 +84,7 @@ class IntegrationExecutor {
 
       authData = result.authData;
     } else if (connectionKey && !connection) {
-      console.warn(`Подключение с key=${connectionKey}, не найдено`);
+      Logger.warn(`Подключение с key=${connectionKey}, не найдено`);
     }
 
     const seriesCount = this.isSeries
@@ -95,15 +99,23 @@ class IntegrationExecutor {
     const blockExecutor = new BlockExecutor({ block: executableBlock });
 
     if (this.isSeries) {
-      console.log(`Выполняется серия запусков блока: "${executableBlock.meta.name}"`);
+      Logger.log(`Выполняется серия запусков блока: "${executableBlock.meta.name}"`);
     } else {
-      console.log(`Выполняется блок: "${executableBlock.meta.name}"`);
+      Logger.log(`Выполняется блок: "${executableBlock.meta.name}"`);
     }
     for (let index = 0; index < seriesCount; index++) {
       const result = this.executeBlock(blockExecutor, {
         authData,
         context,
       });
+
+      if (!this.isSeries && this.isGenerateSchema && index === 0) {
+        try {
+          Logger.success(JSON.stringify(generateSchemaFromOutputData(result.output), null, 2));
+        } catch (error) {
+          Logger.error(`Ошибка при генерации схемы! ${JSON.stringify(error)}`);
+        }
+      }
 
       context = result?.state ? structuredClone(result.state) : undefined;
 
@@ -114,7 +126,7 @@ class IntegrationExecutor {
   }
 
   private executeConnection(connection: IntegrationConnection) {
-    console.log(`Выполняется подключение: "${connection.meta.name}"`);
+    Logger.log(`Выполняется подключение: "${connection.meta.name}"`);
 
     const service = this.createService();
 
@@ -129,11 +141,11 @@ class IntegrationExecutor {
     try {
       const result = executableConnection.execute({ service, authData: resultAuthData });
 
-      console.log(`Подключение "${connection.meta.name}" выполнено`);
+      Logger.log(`Подключение "${connection.meta.name}" выполнено`);
 
       return result;
     } catch (error) {
-      console.error(`Подключение "${connection.meta.name}" с ошибкой:`, error);
+      Logger.error(`Подключение "${connection.meta.name}" с ошибкой: ${JSON.stringify(error)}`);
       throw error;
     }
   }
@@ -160,12 +172,11 @@ class IntegrationExecutor {
         context: params.context,
       });
 
-      console.log(`Блок "${executableBlock.meta.name}" выполнен:`);
-      console.log(JSON.stringify(result));
+      Logger.log(`Блок "${executableBlock.meta.name}" выполнен!`);
 
       return result;
     } catch (error) {
-      console.error(`Блок "${executableBlock.meta.name}" с ошибкой:`, error);
+      Logger.error(`Блок "${executableBlock.meta.name}" с ошибкой: ${JSON.stringify(error)}`);
       throw error;
     }
   }

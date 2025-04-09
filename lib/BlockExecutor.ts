@@ -1,10 +1,13 @@
 import type {
   BlockExecuteBundle,
   BlockMeta,
+  ExecuteResult,
   ExecuteService,
   IntegrationBlock,
   IntegrationBlockExecute,
 } from "@infomaximum/integration-sdk";
+import { OutputValidator } from "./OutputValidator/OutputValidator/OutputValidator";
+import { Logger } from "./Logger";
 
 type ExecutionContext = Parameters<
   IntegrationBlockExecute<{}, {}, Record<string, any> | undefined>
@@ -30,7 +33,30 @@ class BlockExecutor {
     this.executePagination = block.executePagination;
   }
 
-  public execute({ service, authData, inputData, context }: ExecuteParams) {
+  private validateOutput({ output, output_variables }: ExecuteResult): boolean {
+    const validator = new OutputValidator();
+
+    const validationResult = validator.validateOutput(output, output_variables);
+
+    if (validationResult === true) {
+      Logger.log("Валидация успешно выполнена!");
+
+      return true;
+    }
+
+    Logger.error("Ошибки валидации:");
+
+    validationResult.forEach((error) => Logger.error(`- ${error}`));
+
+    return false;
+  }
+
+  public execute({
+    service,
+    authData,
+    inputData,
+    context,
+  }: ExecuteParams): ExecuteResult<undefined> {
     const bundle = {
       inputData,
       authData,
@@ -39,6 +65,8 @@ class BlockExecutor {
     const args = [service, bundle, context] satisfies ExecutionContext;
 
     const result = this.executePagination.apply(null, args);
+
+    this.validateOutput(result);
 
     return result;
   }
