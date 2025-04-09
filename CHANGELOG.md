@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/Infomaximum/integration-debugger/compare/v1.6.2...v1.7.0) (2025-04-09)
+
+
+### Features
+
+* валидация структуры ([63f1972](https://github.com/Infomaximum/integration-debugger/commit/63f197275f35cd5780eb8b51998eafac5e0d4c66))
+* добавлен генератор схемы по output данным ([4dff17c](https://github.com/Infomaximum/integration-debugger/commit/4dff17c10e46f6c0a798c37b306300857f53bc36))
+* добавлен логгер и генерирование схемы по флагу ([4069e10](https://github.com/Infomaximum/integration-debugger/commit/4069e109ab8154252e3d5875ea3039570b8af8f4))
+* начальная реализация валидации выходных значений ([6a32ea9](https://github.com/Infomaximum/integration-debugger/commit/6a32ea96ea3b763f069487ad4fc3437912460af5))
+
+
+### Bug Fixes
+
+* log ([b4fdfbe](https://github.com/Infomaximum/integration-debugger/commit/b4fdfbea9b33a48189c985332b356c6da7fcaa6a))
+* валидация ([5eaab38](https://github.com/Infomaximum/integration-debugger/commit/5eaab382f01ea007fce75e91893bd593372c584f))
+
 ### [1.6.2](https://github.com/Infomaximum/integration-debugger/compare/v1.6.1...v1.6.2) (2025-04-04)
 
 
