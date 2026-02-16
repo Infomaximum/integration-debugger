@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { ArrayInferenceStrategy } from "./ArrayInferenceStrategy";
-import { SchemaGenerator } from "lib/SchemaGenerator/SchemaGenerator/SchemaGenerator";
+import { SchemaGenerator } from "../../SchemaGenerator/SchemaGenerator";
 
 describe("ArrayInferenceStrategy", () => {
   test("Генерация валидного типы из входного значения типа array", () => {

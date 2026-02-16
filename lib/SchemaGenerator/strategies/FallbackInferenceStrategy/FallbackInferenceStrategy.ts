@@ -1,5 +1,5 @@
-import { Logger } from "lib/Logger";
-import type { InferenceStrategy, ReturnInferStruct } from "lib/SchemaGenerator/InferenceStrategy";
+import { Logger } from "../../../Logger";
+import type { InferenceStrategy, ReturnInferStruct } from "../../InferenceStrategy";
 
 export class FallbackInferenceStrategy implements InferenceStrategy {
   // Эта стратегия применяется последней, если ни одна другая не подошла

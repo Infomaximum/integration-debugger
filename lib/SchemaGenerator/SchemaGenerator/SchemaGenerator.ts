@@ -6,7 +6,7 @@ import { NumberInferenceStrategy } from "../strategies/NumberInferenceStrategy/N
 import { BooleanInferenceStrategy } from "../strategies/BooleanInferenceStrategy/BooleanInferenceStrategy";
 import { ObjectInferenceStrategy } from "../strategies/ObjectInferenceStrategy/ObjectInferenceStrategy";
 import { FallbackInferenceStrategy } from "../strategies/FallbackInferenceStrategy/FallbackInferenceStrategy";
-import { Logger } from "lib/Logger";
+import { Logger } from "../../Logger";
 
 export class SchemaGenerator {
   private strategies: InferenceStrategy[] = [];

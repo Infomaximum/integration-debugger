@@ -1,6 +1,6 @@
 import type { OutputBlockVariables } from "@infomaximum/integration-sdk";
-import type { OutputValidator } from "lib/OutputValidator/OutputValidator/OutputValidator";
-import type { ValidationStrategy } from "lib/OutputValidator/ValidationStrategy";
+import type { OutputValidator } from "../../OutputValidator/OutputValidator";
+import type { ValidationStrategy } from "../../ValidationStrategy";
 
 type VariableType = OutputBlockVariables["type"];
 

@@ -1,4 +1,5 @@
 import type {
+  ButtonInputFieldConnection,
   ConnectionExecuteBundle,
   ExecuteService,
   GlobalAuthData,
@@ -23,7 +24,9 @@ export class ConnectionExecutor {
   }
 
   public execute({ authData, service }: ConnectionExecuteParams) {
-    const buttonFields = this.connection.inputFields.filter((f) => f.type === "button");
+    const buttonFields = this.connection.inputFields.filter(
+      (f) => typeof f === "object" && "type" in f && f.type === "button"
+    ) as ButtonInputFieldConnection<any>[];
 
     const copyAuthData = structuredClone(authData);
 
@@ -32,18 +35,27 @@ export class ConnectionExecutor {
     } satisfies ConnectionExecuteBundle<ConnectionExecuteParams["authData"]>;
 
     for (const buttonField of buttonFields) {
-      buttonField.executeWithRedirect?.(service, bundle);
-
-      const result = buttonField.executeWithSaveFields?.(service, bundle);
-
-      if (result) {
-        Object.assign(bundle.authData, result);
+      if (buttonField.typeOptions?.redirect) {
+        buttonField.typeOptions.redirect(service, bundle);
       }
 
-      const message = buttonField.executeWithMessage?.(service, bundle);
+      if (buttonField.typeOptions?.saveFields) {
+        const result = buttonField.typeOptions.saveFields(service, bundle);
 
-      if (message) {
-        Logger.log(message);
+        if (result) {
+          Object.assign(bundle.authData, result);
+        }
+      }
+
+      if (buttonField.typeOptions?.message) {
+        const messageOrFn = buttonField.typeOptions.message;
+
+        const message =
+          typeof messageOrFn === "function" ? messageOrFn(service, bundle) : messageOrFn;
+
+        if (message) {
+          Logger.log(message);
+        }
       }
     }
 

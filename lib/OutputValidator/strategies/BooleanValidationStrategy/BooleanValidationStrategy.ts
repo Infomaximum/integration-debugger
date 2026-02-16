@@ -1,4 +1,4 @@
-import type { ValidationStrategy } from "lib/OutputValidator/ValidationStrategy";
+import type { ValidationStrategy } from "../../ValidationStrategy";
 
 export class BooleanValidationStrategy implements ValidationStrategy {
   validate(value: any, path: string): string[] {

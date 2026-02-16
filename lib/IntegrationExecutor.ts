@@ -42,45 +42,41 @@ class IntegrationExecutor {
   }
 
   private createService(): ExecuteService {
-    const { request, error, base64Decode, base64Encode, console } = new Service();
+    const serviceInstance = new Service();
 
     const service = {
-      request,
-      error,
-      base64Decode,
-      base64Encode,
-      console,
+      request: serviceInstance.request.bind(serviceInstance),
+      stringError: serviceInstance.stringError.bind(serviceInstance),
+      base64Decode: serviceInstance.base64Decode.bind(serviceInstance),
+      base64Encode: serviceInstance.base64Encode.bind(serviceInstance),
+      hook: serviceInstance.hook.bind(serviceInstance),
     } satisfies ExecuteService;
 
     return service;
   }
 
   public execute() {
-    const executableConnection = this.integration.connections.find(
-      (c) => c.meta.key === this.entityKey
-    );
-
-    const executableBlock = this.integration.blocks.find((b) => b.meta.key === this.entityKey);
+    const executableConnection = this.integration.connections[this.entityKey];
+    const executableBlock = this.integration.blocks[this.entityKey];
 
     if (executableConnection) {
-      this.executeConnection(executableConnection);
+      this.executeConnection(executableConnection, this.entityKey);
     } else if (executableBlock) {
-      this.executeBlockWithConnection(executableBlock);
+      return this.executeBlockWithConnection(executableBlock);
     } else {
       throw new Error(`Сущность с key=${this.entityKey} не найдена в блоках и подключениях`);
     }
   }
 
-  private executeBlockWithConnection(executableBlock: IntegrationBlock) {
+  private async executeBlockWithConnection(executableBlock: IntegrationBlock) {
     const connectionKey = this.debuggingConfig.blocks?.[this.entityKey]?.connectionKey;
 
-    const connection =
-      !!connectionKey && this.integration.connections.find((c) => c?.meta?.key === connectionKey);
+    const connection = connectionKey ? this.integration.connections[connectionKey] : undefined;
 
     let authData: Record<string, any> | undefined;
 
-    if (connection) {
-      const result = this.executeConnection(connection) ?? { authData: undefined };
+    if (connection && connectionKey) {
+      const result = this.executeConnection(connection, connectionKey) ?? { authData: undefined };
 
       authData = result.authData;
     } else if (connectionKey && !connection) {
@@ -99,40 +95,45 @@ class IntegrationExecutor {
     const blockExecutor = new BlockExecutor({ block: executableBlock });
 
     if (this.isSeries) {
-      Logger.log(`Выполняется серия запусков блока: "${executableBlock.meta.name}"`);
+      Logger.log(`Выполняется серия запусков блока: "${executableBlock.label}"`);
     } else {
-      Logger.log(`Выполняется блок: "${executableBlock.meta.name}"`);
+      Logger.log(`Выполняется блок: "${executableBlock.label}"`);
     }
     for (let index = 0; index < seriesCount; index++) {
-      const result = this.executeBlock(blockExecutor, {
-        authData,
-        context,
-      });
+      try {
+        const result = await this.executeBlock(blockExecutor, {
+          authData,
+          context,
+        });
 
-      if (!this.isSeries && this.isGenerateSchema && index === 0) {
-        try {
-          Logger.success(JSON.stringify(generateSchemaFromOutputData(result.output), null, 2));
-        } catch (error) {
-          Logger.error(`Ошибка при генерации схемы! ${JSON.stringify(error)}`);
+        if (!this.isSeries && this.isGenerateSchema && index === 0) {
+          try {
+            Logger.success(JSON.stringify(generateSchemaFromOutputData(result.output), null, 2));
+          } catch (error) {
+            Logger.error(`Ошибка при генерации схемы! ${JSON.stringify(error)}`);
+          }
         }
-      }
 
-      context = result?.state ? structuredClone(result.state) : undefined;
+        context = result?.state ? structuredClone(result.state) : undefined;
 
-      if (result?.hasNext === false) {
-        break;
+        if (result?.hasNext === false) {
+          break;
+        }
+      } catch (error) {
+        Logger.error(`Блок "${executableBlock.label}" с ошибкой:`);
+        throw error;
       }
     }
   }
 
-  private executeConnection(connection: IntegrationConnection) {
-    Logger.log(`Выполняется подключение: "${connection.meta.name}"`);
+  private executeConnection(connection: IntegrationConnection, connectionKey: string) {
+    Logger.log(`Выполняется подключение: "${connection.label}"`);
 
     const service = this.createService();
 
     const executableConnection = new ConnectionExecutor({ connection });
 
-    const { authData } = this.debuggingConfig.connections?.[connection.meta.key] ?? {
+    const { authData } = this.debuggingConfig.connections?.[connectionKey] ?? {
       authData: {},
     };
 
@@ -141,19 +142,20 @@ class IntegrationExecutor {
     try {
       const result = executableConnection.execute({ service, authData: resultAuthData });
 
-      Logger.log(`Подключение "${connection.meta.name}" выполнено`);
+      Logger.log(`Подключение "${connection.label}" выполнено`);
 
       return result;
     } catch (error) {
-      Logger.error(`Подключение "${connection.meta.name}" с ошибкой: ${JSON.stringify(error)}`);
+      Logger.error(`Подключение "${connection.label}" с ошибкой: ${JSON.stringify(error)}`);
+
       throw error;
     }
   }
 
-  private executeBlock(executableBlock: BlockExecutor, params: ExecuteBlockParams) {
+  private async executeBlock(executableBlock: BlockExecutor, params: ExecuteBlockParams) {
     const service = this.createService();
 
-    const { inputData, authData } = this.debuggingConfig?.blocks?.[executableBlock.meta.key] ?? {
+    const { inputData, authData } = this.debuggingConfig?.blocks?.[this.entityKey] ?? {
       inputData: {},
       authData: {},
     };
@@ -165,18 +167,18 @@ class IntegrationExecutor {
     );
 
     try {
-      const result = executableBlock.execute({
+      const result = await executableBlock.execute({
         service,
         authData: resultAuthData,
         inputData,
         context: params.context,
       });
 
-      Logger.log(`Блок "${executableBlock.meta.name}" выполнен!`);
+      Logger.log(`Блок "${executableBlock.label}" выполнен!`);
 
       return result;
     } catch (error) {
-      Logger.error(`Блок "${executableBlock.meta.name}" с ошибкой: ${JSON.stringify(error)}`);
+      Logger.error(`Блок "${executableBlock.label}" с ошибкой: ${JSON.stringify(error)}`);
       throw error;
     }
   }

@@ -1,10 +1,6 @@
-import { Logger } from "lib/Logger";
-import type {
-  InferenceStrategy,
-  ReturnInferStruct,
-  VariableType,
-} from "lib/SchemaGenerator/InferenceStrategy";
-import type { SchemaGenerator } from "lib/SchemaGenerator/SchemaGenerator/SchemaGenerator";
+import { Logger } from "../../../Logger";
+import type { InferenceStrategy, ReturnInferStruct, VariableType } from "../../InferenceStrategy";
+import type { SchemaGenerator } from "../../SchemaGenerator/SchemaGenerator";
 
 export class ArrayInferenceStrategy implements InferenceStrategy {
   constructor(private generator: SchemaGenerator) {}

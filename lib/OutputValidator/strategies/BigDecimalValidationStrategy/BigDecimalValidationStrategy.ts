@@ -1,5 +1,5 @@
-import { isConvertedNumberToString } from "lib/OutputValidator/utils";
-import type { ValidationStrategy } from "lib/OutputValidator/ValidationStrategy";
+import { isConvertedNumberToString } from "../../utils";
+import type { ValidationStrategy } from "../../ValidationStrategy";
 
 export class BigDecimalValidationStrategy implements ValidationStrategy {
   validate(value: any, path: string): string[] {

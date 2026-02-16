@@ -1,6 +1,6 @@
 import { expect, test, describe } from "vitest";
 import { ArrayValidationStrategy } from "./ArrayValidationStrategy";
-import { OutputValidator } from "lib/OutputValidator/OutputValidator/OutputValidator";
+import { OutputValidator } from "../../OutputValidator/OutputValidator";
 import type { OutputBlockVariables } from "@infomaximum/integration-sdk";
 import { StringValidationStrategy } from "../StringValidationStrategy/StringValidationStrategy";
 import { ObjectValidationStrategy } from "../ObjectValidationStrategy/ObjectValidationStrategy";

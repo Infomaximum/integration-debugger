@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test, vi } from "vitest";
 import { ObjectInferenceStrategy } from "./ObjectInferenceStrategy";
-import { SchemaGenerator } from "lib/SchemaGenerator/SchemaGenerator/SchemaGenerator";
+import { SchemaGenerator } from "../../SchemaGenerator/SchemaGenerator";
 
 describe("ObjectInferenceStrategy", () => {
   const consoleLogMock = vi.spyOn(console, "log").mockImplementation(() => undefined);

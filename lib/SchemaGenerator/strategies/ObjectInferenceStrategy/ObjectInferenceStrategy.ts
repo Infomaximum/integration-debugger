@@ -1,7 +1,7 @@
 import type { OutputBlockVariables } from "@infomaximum/integration-sdk";
-import { Logger } from "lib/Logger";
-import type { InferenceStrategy, ReturnInferStruct } from "lib/SchemaGenerator/InferenceStrategy";
-import type { SchemaGenerator } from "lib/SchemaGenerator/SchemaGenerator/SchemaGenerator";
+import { Logger } from "../../../Logger";
+import type { InferenceStrategy, ReturnInferStruct } from "../../InferenceStrategy";
+import type { SchemaGenerator } from "../../SchemaGenerator/SchemaGenerator";
 
 export class ObjectInferenceStrategy implements InferenceStrategy {
   constructor(private generator: SchemaGenerator) {}

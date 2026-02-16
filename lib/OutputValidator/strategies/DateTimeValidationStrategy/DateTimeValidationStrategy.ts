@@ -1,5 +1,5 @@
-import { isFiniteNumber } from "lib/OutputValidator/utils";
-import type { ValidationStrategy } from "lib/OutputValidator/ValidationStrategy";
+import { isFiniteNumber } from "../../utils";
+import type { ValidationStrategy } from "../../ValidationStrategy";
 
 export class DateTimeValidationStrategy implements ValidationStrategy {
   validate(value: any, path: string): string[] {

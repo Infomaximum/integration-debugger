@@ -1,11 +1,6 @@
-import type {
-  ExecuteService,
-  ExecuteServiceError,
-  RequestConfig,
-} from "@infomaximum/integration-sdk";
-
-//@ts-expect-error
-import { XMLHttpRequest as _XMLHttpRequest } from "xmlhttprequest";
+import type { ExecuteService, RequestConfig } from "@infomaximum/integration-sdk";
+import type { XMLHttpRequest as _XMLHttpRequest } from "xmlhttprequest";
+import { Logger } from "./Logger";
 
 class Service implements ExecuteService {
   public request(config: RequestConfig) {
@@ -35,15 +30,18 @@ class Service implements ExecuteService {
     }
   }
 
-  public get error(): ExecuteServiceError {
-    return {
-      stringError: (message: string) => {
-        throw new Error(message);
-      },
-      cause: (message: string) => {
-        throw new Error(message);
-      },
-    };
+  public stringError(message: string): never {
+    Logger.error(message);
+
+    throw new Error(message);
+  }
+
+  public hook(
+    _fn: (url: string, headers: Record<string, string>) => string,
+    _guid: string,
+    _timeout: number
+  ): string | undefined {
+    return undefined;
   }
 
   public base64Encode(input: string) {
