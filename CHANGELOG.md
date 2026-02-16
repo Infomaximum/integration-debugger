@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.1](https://github.com/Infomaximum/integration-debugger/compare/v1.7.0...v1.7.1) (2026-02-16)
+
+
+### Bug Fixes
+
+*  исправлен импорт ([57400da](https://github.com/Infomaximum/integration-debugger/commit/57400da265c634c7c5108f7d3c8ea933a4765826))
+* исключены тесты из сборки ([5acca2e](https://github.com/Infomaximum/integration-debugger/commit/5acca2e315569317ed3457a24b76bf5eba62c666))
+* request возвращает ArrayBuffer ([239b118](https://github.com/Infomaximum/integration-debugger/commit/239b118d2cfe950b28e986371d67a890a046ef35))
+
 ## [1.7.0](https://github.com/Infomaximum/integration-debugger/compare/v1.6.2...v1.7.0) (2025-04-09)
 
 
