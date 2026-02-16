@@ -8,5 +8,6 @@
     "declarationDir": "dist/dts",
     "removeComments": false
   },
-  "include": ["lib"]
+  "include": ["lib"],
+  "exclude": ["**/*.test.ts", "**/__tests__/**"]
 }
