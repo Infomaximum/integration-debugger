@@ -4,7 +4,7 @@ import { XMLHttpRequest as _XMLHttpRequest } from "xmlhttprequest";
 import { Logger } from "./Logger";
 
 class Service implements ExecuteService {
-  public request(config: RequestConfig) {
+  public request<ArrayBuffer>(config: RequestConfig) {
     const { method, url, headers } = config;
 
     //@ts-expect-error
@@ -14,7 +14,7 @@ class Service implements ExecuteService {
 
     if (headers) {
       Object.entries(headers).forEach(([key, value]) => {
-        xhr.setRequestHeader(key, value);
+        xhr.setRequestHeader(key, value as string);
       });
     }
 
@@ -24,10 +24,12 @@ class Service implements ExecuteService {
       xhr.send(config.jsonBody || config.multipartBody);
     }
 
+    const buffer = new TextEncoder().encode(xhr.responseText).buffer as ArrayBuffer;
+
     if (xhr.status === 200) {
-      return { response: JSON.parse(xhr.responseText), status: xhr.status };
+      return { response: buffer, status: xhr.status };
     } else {
-      return { response: JSON.parse(xhr.statusText), status: xhr.status };
+      return { response: buffer, status: xhr.status };
     }
   }
 
