@@ -1,5 +1,6 @@
 import type { ExecuteService, RequestConfig } from "@infomaximum/integration-sdk";
-import type { XMLHttpRequest as _XMLHttpRequest } from "xmlhttprequest";
+//@ts-expect-error
+import { XMLHttpRequest as _XMLHttpRequest } from "xmlhttprequest";
 import { Logger } from "./Logger";
 
 class Service implements ExecuteService {
